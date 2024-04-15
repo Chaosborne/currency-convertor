@@ -1,22 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Block } from "./Block";
 import "./index.scss";
 
 function App() {
-  const [rates, setRates] = useState({});
-  const [fromCurrency, setFromCurrency] = useState("AED");
-  const [toCurrency, setToCurrency] = useState("AMD");
+  const [fromCurrency, setFromCurrency] = useState("CAD");
+  const [toCurrency, setToCurrency] = useState("USD");
   const [fromPrice, setFromPrice] = useState(0);
-  const [toPrice, setToPrice] = useState(0);
+  const [toPrice, setToPrice] = useState(1);
+
+  // const [rates, setRates] = useState({});
+  const ratesRef = useRef({});
 
   useEffect(() => {
     // fetch("https://www.cbr-xml-daily.ru/daily_json.js")
     fetch("https://www.cbr-xml-daily.ru/latest.js")
       .then((res) => res.json())
       .then((json) => {
-        setRates(json.rates);
-        console.log(json);
-        console.log(json.rates);
+        // setRates(json.rates);
+        ratesRef.current = json.rates;
+        onChangeToPrice(1);
       })
       .catch((err) => {
         console.warn(err);
@@ -25,17 +27,24 @@ function App() {
   }, []);
 
   const onChangeFromPrice = (value) => {
-    console.log(rates[fromCurrency]);
-    const price = value / rates[fromCurrency];
-    const result = price * rates[toCurrency];
+    const price = value / ratesRef.current[fromCurrency];
+    const result = price * ratesRef.current[toCurrency];
+    setToPrice(result.toFixed(3));
     setFromPrice(value);
-    setToPrice(result);
   };
   const onChangeToPrice = (value) => {
-    const result = (rates[fromCurrency] / rates[toCurrency]) * value;
-    setFromPrice(result);
+    const result = (ratesRef.current[fromCurrency] / ratesRef.current[toCurrency]) * value;
+    setFromPrice(result.toFixed(3));
     setToPrice(value);
   };
+
+  useEffect(() => {
+    onChangeFromPrice(fromPrice);
+  }, [fromCurrency]);
+
+  useEffect(() => {
+    onChangeToPrice(toPrice);
+  }, [toCurrency]);
 
   return (
     <div className="App">

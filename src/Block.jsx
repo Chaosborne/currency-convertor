@@ -1,6 +1,7 @@
 import React from 'react';
 
-const defaultCurrencies = ['RUB', 'USD', 'EUR', 'GBP'];
+const defaultCurrencies = ['CAD', 'USD', 'EUR', 'GBP'];
+
 
 export const Block = ({ value, currency, onChangeValue, onChangeCurrency }) => (
   <div className="block">
@@ -23,7 +24,7 @@ export const Block = ({ value, currency, onChangeValue, onChangeCurrency }) => (
     <input
       onChange={(e) => onChangeValue(e.target.value)}
       value={value}
-      type="text"
+      type="number"
       placeholder={0}
     />
   </div>

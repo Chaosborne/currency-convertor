@@ -10,11 +10,13 @@ function App() {
   const [toPrice, setToPrice] = useState(0);
 
   useEffect(() => {
-    fetch("https://www.cbr-xml-daily.ru/daily_json.js")
+    // fetch("https://www.cbr-xml-daily.ru/daily_json.js")
+    fetch("https://www.cbr-xml-daily.ru/latest.js")
       .then((res) => res.json())
       .then((json) => {
-        setRates(json.Valute);
-        console.log(json.Valute);
+        setRates(json.rates);
+        console.log(json);
+        console.log(json.rates);
       })
       .catch((err) => {
         console.warn(err);
@@ -23,12 +25,15 @@ function App() {
   }, []);
 
   const onChangeFromPrice = (value) => {
-    const price = value / rates[fromCurrency].Value;
-    const result = price * rates[toCurrency].Value;
+    console.log(rates[fromCurrency]);
+    const price = value / rates[fromCurrency];
+    const result = price * rates[toCurrency];
     setFromPrice(value);
     setToPrice(result);
   };
   const onChangeToPrice = (value) => {
+    const result = (rates[fromCurrency] / rates[toCurrency]) * value;
+    setFromPrice(result);
     setToPrice(value);
   };
 

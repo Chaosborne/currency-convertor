@@ -32,8 +32,18 @@ function App() {
     setToPrice(result.toFixed(3));
     setFromPrice(value);
   };
+
   const onChangeToPrice = (value) => {
+    if (!ratesRef.current[fromCurrency] || !ratesRef.current[toCurrency]) {
+      return;
+    }
+
     const result = (ratesRef.current[fromCurrency] / ratesRef.current[toCurrency]) * value;
+
+    if (isNaN(result)) {
+      return;
+    }
+
     setFromPrice(result.toFixed(3));
     setToPrice(value);
   };
